@@ -4,6 +4,4 @@ type Model interface {
 	Run()
 
 	Shutdown()
-
-	PlayRequest(tunnel Tunnel, payload []byte)
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"ngrok/client/mvc"
 	"ngrok/client/views/term"
-	"ngrok/client/views/web"
 	"ngrok/log"
 	"ngrok/proto"
 	"ngrok/util"
@@ -16,14 +15,6 @@ type command interface{}
 type cmdQuit struct {
 	// display this message after quit
 	message string
-}
-
-type cmdPlayRequest struct {
-	// the tunnel to play this request over
-	tunnel mvc.Tunnel
-
-	// the bytes of the request to issue
-	payload []byte
 }
 
 // The MVC Controller
@@ -79,10 +70,6 @@ func (ctl *Controller) Shutdown(message string) {
 	ctl.cmds <- cmdQuit{message: message}
 }
 
-func (ctl *Controller) PlayRequest(tunnel mvc.Tunnel, payload []byte) {
-	ctl.cmds <- cmdPlayRequest{tunnel: tunnel, payload: payload}
-}
-
 func (ctl *Controller) Go(fn func()) {
 	go func() {
 		defer func() {
@@ -126,10 +113,6 @@ func (ctl *Controller) AddView(v mvc.View) {
 	ctl.views = append(ctl.views, v)
 }
 
-func (ctl *Controller) GetWebInspectAddr() string {
-	return ctl.config.InspectAddr
-}
-
 func (ctl *Controller) SetupModel(config *Configuration) *ClientModel {
 	model := newClientModel(config, ctl)
 	ctl.model = model
@@ -155,13 +138,6 @@ func (ctl *Controller) Run(config *Configuration) {
 	// init the model
 	var state mvc.State = model
 
-	// init web ui
-	var webView *web.WebView
-	if config.InspectAddr != "disabled" {
-		webView = web.NewWebView(ctl, config.InspectAddr)
-		ctl.AddView(webView)
-	}
-
 	// init term ui
 	var termView *term.TermView
 	if config.LogTo != "stdout" {
@@ -175,15 +151,10 @@ func (ctl *Controller) Run(config *Configuration) {
 			if termView != nil {
 				ctl.AddView(termView.NewHttpView(p))
 			}
-
-			if webView != nil {
-				ctl.AddView(webView.NewHttpView(p))
-			}
 		default:
 		}
 	}
 
-	ctl.Go(func() { autoUpdate(state, config.AuthToken) })
 	ctl.Go(ctl.model.Run)
 
 	updates := ctl.updates.Reg()
@@ -201,9 +172,6 @@ func (ctl *Controller) Run(config *Configuration) {
 					fmt.Println(msg)
 					done <- 1
 				}()
-
-			case cmdPlayRequest:
-				ctl.Go(func() { ctl.model.PlayRequest(cmd.tunnel, cmd.payload) })
 			}
 
 		case obj := <-updates:
