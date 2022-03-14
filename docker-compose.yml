@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  server:
+    ports:
+    - 443:443
+    - 4443:4443
+    build:
+      context: .
+    volumes:
+      - "${CERT_PATH?err}:/cert" # fullchain.pem
+      - "${KEY_PATH?err}:/key" # privkey.pem
+    # disable insecure http
+    entrypoint: /go/bin/ngrokd -domain ${DOMAIN?err} -httpAddr="" -tlsCrt="/cert/fullchain.pem" -tlsKey="/key/privkey.pem"

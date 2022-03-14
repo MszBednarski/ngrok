@@ -4,7 +4,7 @@
 package client
 
 var (
-	rootCrtPaths = []string{"assets/client/tls/ngrokroot.crt"}
+	rootCrtPaths = []string{"assets/client/tls/snakeoilca.crt"}
 )
 
 func useInsecureSkipVerify() bool {
