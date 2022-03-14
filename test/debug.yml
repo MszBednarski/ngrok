@@ -1,0 +1,5 @@
+server_addr: ngrok.me:4443
+tunnels:
+  test:
+    proto:
+      http: 8080

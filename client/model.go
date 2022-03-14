@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	metrics "github.com/rcrowley/go-metrics"
-	"io/ioutil"
 	"math"
 	"net"
 	"ngrok/client/mvc"
@@ -22,7 +21,6 @@ import (
 
 const (
 	defaultServerAddr   = "ngrokd.ngrok.com:443"
-	defaultInspectAddr  = "127.0.0.1:4040"
 	pingInterval        = 20 * time.Second
 	maxPongLatency      = 15 * time.Second
 	updateCheckInterval = 6 * time.Hour
@@ -160,21 +158,6 @@ func (c ClientModel) GetBytesOutMetrics() (metrics.Counter, metrics.Histogram) {
 func (c ClientModel) SetUpdateStatus(updateStatus mvc.UpdateStatus) {
 	c.updateStatus = updateStatus
 	c.update()
-}
-
-// mvc.Model interface
-func (c *ClientModel) PlayRequest(tunnel mvc.Tunnel, payload []byte) {
-	var localConn conn.Conn
-	localConn, err := conn.Dial(tunnel.LocalAddr, "prv", nil)
-	if err != nil {
-		c.Warn("Failed to open private leg to %s: %v", tunnel.LocalAddr, err)
-		return
-	}
-
-	defer localConn.Close()
-	localConn = tunnel.Protocol.WrapConn(localConn, mvc.ConnectionContext{Tunnel: tunnel, ClientAddr: "127.0.0.1"})
-	localConn.Write(payload)
-	ioutil.ReadAll(localConn)
 }
 
 func (c *ClientModel) Shutdown() {

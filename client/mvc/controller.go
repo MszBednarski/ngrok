@@ -11,9 +11,6 @@ type Controller interface {
 	// instructs the controller to shut the app down
 	Shutdown(message string)
 
-	// PlayRequest instructs the model to play requests
-	PlayRequest(tunnel Tunnel, payload []byte)
-
 	// A channel of updates
 	Updates() *util.Broadcast
 
@@ -22,7 +19,4 @@ type Controller interface {
 
 	// safe wrapper for running go-routines
 	Go(fn func())
-
-	// the address where the web inspection interface is running
-	GetWebInspectAddr() string
 }
