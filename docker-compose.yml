@@ -8,7 +8,6 @@ services:
     build:
       context: .
     volumes:
-      - "${CERT_PATH?err}:/cert" # fullchain.pem
-      - "${KEY_PATH?err}:/key" # privkey.pem
+      - "${KEYS_PATH?err}:/keys" # fullchain.pem privkey.pem
     # disable insecure http
-    entrypoint: /go/bin/ngrokd -domain ${DOMAIN?err} -httpAddr="" -tlsCrt="/cert/fullchain.pem" -tlsKey="/key/privkey.pem"
+    entrypoint: /go/bin/ngrokd -domain ${DOMAIN?err} -httpAddr="" -tlsCrt="/keys/fullchain.pem" -tlsKey="/keys/privkey.pem"
