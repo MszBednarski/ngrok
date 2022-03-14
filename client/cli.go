@@ -36,16 +36,17 @@ Examples:
 `
 
 type Options struct {
-	config    string
-	logto     string
-	loglevel  string
-	authtoken string
-	httpauth  string
-	hostname  string
-	protocol  string
-	subdomain string
-	command   string
-	args      []string
+	config     string
+	logto      string
+	serverAddr string
+	loglevel   string
+	authtoken  string
+	httpauth   string
+	hostname   string
+	protocol   string
+	subdomain  string
+	command    string
+	args       []string
 }
 
 func ParseArgs() (opts *Options, err error) {
@@ -59,6 +60,11 @@ func ParseArgs() (opts *Options, err error) {
 		"config",
 		"",
 		"Path to ngrok configuration file. (default: $HOME/.ngrok)")
+
+	serverAddr := flag.String(
+		"server_addr",
+		"",
+		"server addr to call")
 
 	logto := flag.String(
 		"log",
@@ -98,15 +104,16 @@ func ParseArgs() (opts *Options, err error) {
 	flag.Parse()
 
 	opts = &Options{
-		config:    *config,
-		logto:     *logto,
-		loglevel:  *loglevel,
-		httpauth:  *httpauth,
-		subdomain: *subdomain,
-		protocol:  *protocol,
-		authtoken: *authtoken,
-		hostname:  *hostname,
-		command:   flag.Arg(0),
+		config:     *config,
+		logto:      *logto,
+		serverAddr: *serverAddr,
+		loglevel:   *loglevel,
+		httpauth:   *httpauth,
+		subdomain:  *subdomain,
+		protocol:   *protocol,
+		authtoken:  *authtoken,
+		hostname:   *hostname,
+		command:    flag.Arg(0),
 	}
 
 	switch opts.command {

@@ -1,0 +1,8 @@
+version: '3.3'
+
+services:
+  ngrok-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    entrypoint: ngrok -log=stdout -httpauth="${HTTP_AUTH?err}" -subdomain=${SUBDOMAIN?err} -server_addr=${SERVER_ADDR?err} $PORT

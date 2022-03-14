@@ -11,4 +11,4 @@ services:
       - "${KEYS_PATH?err}/fullchain.pem:/keys/fullchain.pem" # fullchain.pem privkey.pem
       - "${KEYS_PATH?err}/privkey.pem:/keys/privkey.pem"
     # disable insecure http
-    entrypoint: /go/bin/ngrokd -domain ${DOMAIN?err} -tlsCrt="/keys/fullchain.pem" -tlsKey="/keys/privkey.pem"
+    entrypoint: ngrokd -domain ${DOMAIN?err} -tlsCrt="/keys/fullchain.pem" -tlsKey="/keys/privkey.pem"

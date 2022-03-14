@@ -126,6 +126,9 @@ func LoadConfiguration(opts *Options) (config *Configuration, err error) {
 	if opts.authtoken != "" {
 		config.AuthToken = opts.authtoken
 	}
+	if opts.serverAddr != "" {
+		config.ServerAddr = opts.serverAddr
+	}
 
 	switch opts.command {
 	// start a single tunnel, the default, simple ngrok behavior
