@@ -8,5 +8,6 @@ src/launchpad.net
 src/gopkg.in
 server/assets/
 client/assets/
+secret.pem
 *.log
 *.log.*

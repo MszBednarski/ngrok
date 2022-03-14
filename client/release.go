@@ -4,7 +4,7 @@
 package client
 
 var (
-	rootCrtPaths = []string{"assets/client/tls/snakeoilca.crt"}
+	rootCrtPaths = []string{"assets/client/tls/secret.pem"}
 )
 
 func useInsecureSkipVerify() bool {
